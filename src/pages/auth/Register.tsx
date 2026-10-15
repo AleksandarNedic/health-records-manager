@@ -1,6 +1,7 @@
 import { useForm, useWatch } from "react-hook-form";
 import { Link } from "react-router";
 import "../../App.css";
+import useRegister from "../../hooks/useRegister";
 
 type RegisterFormData = {
   fullName: string;
@@ -22,10 +23,11 @@ function Register() {
     name: "password",
   });
 
-  function onSubmit(data: RegisterFormData) {
-    console.log(data);
-  }
+  const { register: registerUser, error, loading } = useRegister();
 
+  function onSubmit(data: RegisterFormData) {
+    registerUser(data.fullName, data.email, data.password);
+  }
 
   return (
     <div className="login-page">
@@ -85,9 +87,7 @@ function Register() {
             />
 
             {errors.email && (
-              <p className="text-danger small mt-1">
-                {errors.email.message}
-              </p>
+              <p className="text-danger small mt-1">{errors.email.message}</p>
             )}
           </div>
 
@@ -141,12 +141,20 @@ function Register() {
             )}
           </div>
 
+          {error && (
+            <div className="login-error" role="alert">
+              <i className="bi bi-exclamation-circle me-2"></i>
+              {error}
+            </div>
+          )}
+
           <button
             type="submit"
             className="btn login-button w-100"
+            disabled={loading}
           >
-            Create account
-            <i className="bi bi-arrow-right ms-2"></i>
+            {loading ? "Creating account..." : "Create account"}
+            {!loading && <i className="bi bi-arrow-right ms-2"></i>}
           </button>
         </form>
 
@@ -154,16 +162,11 @@ function Register() {
           <span>ALREADY HAVE AN ACCOUNT?</span>
         </div>
 
-        <Link
-          to="/login"
-          className="btn create-account-button w-100"
-        >
+        <Link to="/login" className="btn create-account-button w-100">
           Sign in
         </Link>
 
-        <p className="login-footer">
-          Your health journey, all in one place.
-        </p>
+        <p className="login-footer">Your health journey, all in one place.</p>
       </div>
     </div>
   );

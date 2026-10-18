@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
 import { auth, db } from "../lib/firebase";
+import { useNavigate } from "react-router";
 
 interface HealthRecord {
   id: string;
@@ -62,6 +63,7 @@ function RecentHealthRecords() {
   const [records, setRecords] = useState<HealthRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     let unsubscribeRecords: (() => void) | undefined;
@@ -134,9 +136,7 @@ function RecentHealthRecords() {
           type="button"
           className="text-button"
           onClick={() => {
-            document
-              .getElementById("records")
-              ?.scrollIntoView({ behavior: "smooth" });
+            navigate("/all-medical-records");
           }}
         >
           View all records <i className="bi bi-arrow-up-right" />

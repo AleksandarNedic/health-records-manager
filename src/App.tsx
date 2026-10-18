@@ -4,6 +4,7 @@ import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import Dashboard from "./pages/dashboard/Dashboard";
 import AddHealthRecord from "./pages/medical-records/AddHealthRecord";
+import AllHealthRecords from "./pages/medical-records/AllMedicalRecords";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <Route path="/register" element={<Register />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/medical-records/new" element={<AddHealthRecord />} />
+      <Route path="/all-medical-records" element={<AllHealthRecords />} />
     </Routes>
   );
 }

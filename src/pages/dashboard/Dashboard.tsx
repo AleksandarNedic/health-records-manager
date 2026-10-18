@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { signOut } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
@@ -118,7 +117,11 @@ function Dashboard() {
   return (
     <div className="health-app">
       <aside className="sidebar">
-        <a href="#dashboard" className="brand">
+        <button
+          type="button"
+          className="brand"
+          onClick={() => navigate("/dashboard")}
+        >
           <span className="brand-mark">
             <i className="bi bi-plus-lg" />
           </span>
@@ -127,37 +130,57 @@ function Dashboard() {
             pulse<span className="brand-light">care</span>
             <small>PERSONAL HEALTH OS</small>
           </span>
-        </a>
+        </button>
 
         <div className="nav-label">WORKSPACE</div>
 
         <nav className="app-nav">
-          <a className="nav-item active" href="#dashboard">
+          <button
+            type="button"
+            className="nav-item active"
+            onClick={() => navigate("/dashboard")}
+          >
             <i className="bi bi-grid-1x2-fill" />
             Overview
             <span className="nav-indicator" />
-          </a>
+          </button>
 
-          <a className="nav-item" href="#records">
+          <button
+            type="button"
+            className="nav-item"
+            onClick={() => navigate("/all-medical-records")}
+          >
             <i className="bi bi-folder2-open" />
             Medical records
-          </a>
+          </button>
 
-          <a className="nav-item" href="#medications">
+          <button
+            type="button"
+            className="nav-item"
+            onClick={() => navigate("/medications")}
+          >
             <i className="bi bi-capsule" />
             Medications
-          </a>
+          </button>
 
-          <a className="nav-item" href="#appointments">
+          <button
+            type="button"
+            className="nav-item"
+            onClick={() => navigate("/appointments")}
+          >
             <i className="bi bi-calendar2-week" />
             Appointments
             <span className="nav-dot" />
-          </a>
+          </button>
 
-          <a className="nav-item" href="#insights">
+          <button
+            type="button"
+            className="nav-item"
+            onClick={() => navigate("/health-insights")}
+          >
             <i className="bi bi-graph-up-arrow" />
             Health insights
-          </a>
+          </button>
         </nav>
 
         <div className="sidebar-bottom">
@@ -170,9 +193,13 @@ function Dashboard() {
 
             <p>Your personal health information deserves privacy.</p>
 
-            <a href="#privacy">
+            <button
+              type="button"
+              className="privacy-link"
+              onClick={() => navigate("/privacy")}
+            >
               Privacy settings <i className="bi bi-arrow-up-right" />
-            </a>
+            </button>
           </div>
 
           <div className="profile">
@@ -356,9 +383,7 @@ function Dashboard() {
                     }`}
                     style={{ height: `${item.height}%` }}
                   >
-                    {index === 5 && (
-                      <span className="chart-tooltip">95%</span>
-                    )}
+                    {index === 5 && <span className="chart-tooltip">95%</span>}
                   </div>
 
                   <span
@@ -423,11 +448,7 @@ function Dashboard() {
             <button
               type="button"
               className="outline-button"
-              onClick={() =>
-                alert(
-                  "Appointment management will be available when connected to your database.",
-                )
-              }
+              onClick={() => navigate("/appointments")}
             >
               View appointment details <i className="bi bi-arrow-right" />
             </button>

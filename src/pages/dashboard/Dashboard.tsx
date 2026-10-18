@@ -5,6 +5,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { useNavigate } from "react-router";
 import { auth, db } from "../../lib/firebase";
 import "../../App.css";
+import RecentHealthRecords from "../../components/RecentHealthRecords";
 
 const healthMetrics = [
   {
@@ -33,36 +34,6 @@ const healthMetrics = [
   },
 ];
 
-const records = [
-  {
-    date: "12",
-    month: "OCT",
-    title: "Annual health examination",
-    category: "GENERAL CHECKUP",
-    doctor: "Dr. Sarah Mitchell",
-    status: "Completed",
-    icon: "bi-clipboard2-pulse",
-  },
-  {
-    date: "08",
-    month: "OCT",
-    title: "Blood test results",
-    category: "LABORATORY",
-    doctor: "City Medical Center",
-    status: "Reviewed",
-    icon: "bi-droplet-half",
-  },
-  {
-    date: "02",
-    month: "OCT",
-    title: "Influenza vaccination",
-    category: "VACCINATION",
-    doctor: "Dr. James Wilson",
-    status: "Completed",
-    icon: "bi-shield-plus",
-  },
-];
-
 const week = [
   { day: "M", height: 42 },
   { day: "T", height: 66 },
@@ -82,6 +53,8 @@ function Dashboard() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    let isMounted = true;
+
     async function loadProfile() {
       const user = auth.currentUser;
 
@@ -94,6 +67,8 @@ function Dashboard() {
         const userRef = doc(db, "users", user.uid);
         const userSnapshot = await getDoc(userRef);
 
+        if (!isMounted) return;
+
         if (userSnapshot.exists()) {
           const profile = userSnapshot.data();
           setFullName(profile.fullName || user.email || "User");
@@ -101,14 +76,22 @@ function Dashboard() {
           setFullName(user.displayName || user.email || "User");
         }
       } catch {
+        if (!isMounted) return;
+
         setFullName(user.displayName || user.email || "User");
         setError("Could not load your profile.");
       } finally {
-        setLoadingProfile(false);
+        if (isMounted) {
+          setLoadingProfile(false);
+        }
       }
     }
 
     loadProfile();
+
+    return () => {
+      isMounted = false;
+    };
   }, [navigate]);
 
   async function handleLogout() {
@@ -158,7 +141,6 @@ function Dashboard() {
           <a className="nav-item" href="#records">
             <i className="bi bi-folder2-open" />
             Medical records
-            <span className="nav-count">12</span>
           </a>
 
           <a className="nav-item" href="#medications">
@@ -197,9 +179,7 @@ function Dashboard() {
             <div className="avatar">{initials || "U"}</div>
 
             <div className="profile-info">
-              <strong>
-                {loadingProfile ? "Loading..." : fullName}
-              </strong>
+              <strong>{loadingProfile ? "Loading..." : fullName}</strong>
               <span>Personal account</span>
             </div>
 
@@ -281,11 +261,7 @@ function Dashboard() {
             <button
               type="button"
               className="primary-button"
-              onClick={() =>
-                document
-                  .getElementById("records")
-                  ?.scrollIntoView({ behavior: "smooth" })
-              }
+              onClick={() => navigate("/medical-records/new")}
             >
               <i className="bi bi-plus-lg" /> Add health record
             </button>
@@ -294,9 +270,11 @@ function Dashboard() {
           <div className="hero-decoration">
             <div className="orbit orbit-one" />
             <div className="orbit orbit-two" />
+
             <div className="orbit-core">
               <i className="bi bi-heart-pulse" />
             </div>
+
             <span className="orbit-label">
               HEALTH
               <br />
@@ -361,9 +339,11 @@ function Dashboard() {
               <strong>
                 82<span>/100</span>
               </strong>
+
               <span className="chart-positive">
                 <i className="bi bi-arrow-up-right" /> +8.4%
               </span>
+
               <small>Wellness consistency score</small>
             </div>
 
@@ -454,69 +434,16 @@ function Dashboard() {
           </section>
         </div>
 
-        <section className="panel records-panel" id="records">
-          <div className="panel-heading records-heading">
-            <div>
-              <span className="section-kicker">04 / YOUR HISTORY</span>
-              <h2>Recent medical records</h2>
-              <p className="panel-subtitle">
-                Your health story, documented over time.
-              </p>
-            </div>
-
-            <button
-              type="button"
-              className="text-button"
-              onClick={() =>
-                alert(
-                  "Your full medical history will appear here once connected to Firestore.",
-                )
-              }
-            >
-              View all records <i className="bi bi-arrow-up-right" />
-            </button>
-          </div>
-
-          <div className="record-list">
-            {records.map((record) => (
-              <article className="record-row" key={record.title}>
-                <div className="record-date">
-                  <strong>{record.date}</strong>
-                  <span>{record.month}</span>
-                </div>
-
-                <div className="record-icon">
-                  <i className={`bi ${record.icon}`} />
-                </div>
-
-                <div className="record-info">
-                  <span className="record-category">{record.category}</span>
-                  <strong>{record.title}</strong>
-                  <span className="record-doctor">{record.doctor}</span>
-                </div>
-
-                <span className="record-status">
-                  <i className="bi bi-check-circle-fill" /> {record.status}
-                </span>
-
-                <button
-                  type="button"
-                  className="icon-button record-more"
-                  aria-label={`More options for ${record.title}`}
-                >
-                  <i className="bi bi-three-dots-vertical" />
-                </button>
-              </article>
-            ))}
-          </div>
-        </section>
+        <RecentHealthRecords />
 
         <footer className="app-footer">
           <span>
             <span className="footer-heart">+</span> pulsecare
             <span className="footer-dot">.</span>
           </span>
+
           <span>YOUR HEALTH JOURNEY, IN YOUR HANDS.</span>
+
           <span>
             DESIGNED FOR WELLBEING <i className="bi bi-heart-pulse" />
           </span>

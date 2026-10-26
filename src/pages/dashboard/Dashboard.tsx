@@ -6,6 +6,7 @@ import { auth, db } from "../../lib/firebase";
 import "../../App.css";
 import RecentHealthRecords from "../../components/RecentHealthRecords";
 
+
 const healthMetrics = [
   {
     label: "Heart rate",

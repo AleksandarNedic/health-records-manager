@@ -4,8 +4,10 @@ import Register from "./pages/auth/Register";
 import Dashboard from "./pages/dashboard/Dashboard";
 import AddHealthRecord from "./pages/medical-records/AddHealthRecord";
 import AllHealthRecords from "./pages/medical-records/AllMedicalRecords";
-import Medications from './pages/medications/Medications'
-import AddMedications from "./pages/medications/AddMedications"
+import Medications from "./pages/medications/Medications";
+import AddMedications from "./pages/medications/AddMedications";
+import Appointments from "../src/pages/appointments/Appointments";
+import AddAppointment from "./pages/appointments/addAppointment";
 
 function App() {
   return (
@@ -18,6 +20,8 @@ function App() {
       <Route path="/all-medical-records" element={<AllHealthRecords />} />
       <Route path="/medications" element={<Medications />} />
       <Route path="/addmedications" element={<AddMedications />} />
+      <Route path="/appointments" element={<Appointments />}></Route>
+      <Route path="/addappointment" element={<AddAppointment />}></Route>
     </Routes>
   );
 }

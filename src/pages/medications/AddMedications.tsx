@@ -1,7 +1,13 @@
+import { useState } from "react";
 import { useNavigate } from "react-router";
+import useMedications from "../../hooks/useMedications";
 
 export default function AddMedications() {
   const navigate = useNavigate();
+  const { addMedication, loading, error } = useMedications();
+
+  const [successMessage, setSuccessMessage] = useState("");
+  const [submitError, setSubmitError] = useState("");
 
   return (
     <div className="health-app medications-page">
@@ -31,11 +37,57 @@ export default function AddMedications() {
           </div>
 
           <form
-            onSubmit={(event) => {
+            onSubmit={async (event) => {
               event.preventDefault();
-              navigate("/medications");
+
+              setSuccessMessage("");
+              setSubmitError("");
+
+              const form = event.currentTarget;
+              const formData = new FormData(form);
+
+              try {
+                const success = await addMedication({
+                  medicationName: String(formData.get("medicationName") ?? ""),
+                  dosage: String(formData.get("dosage") ?? ""),
+                  frequency: String(formData.get("frequency") ?? ""),
+                  route: String(formData.get("route") ?? ""),
+                  startDate: String(formData.get("startDate") ?? ""),
+                  endDate: String(formData.get("endDate") ?? ""),
+                  prescribedBy: String(formData.get("prescribedBy") ?? ""),
+                  medicationNotes: String(
+                    formData.get("medicationNotes") ?? "",
+                  ),
+                });
+
+                if (success) {
+                  setSuccessMessage("Medication added successfully!");
+                  form.reset();
+                } else {
+                  setSubmitError(
+                    error || "Failed to add medication. Please try again.",
+                  );
+                }
+              } catch {
+                setSubmitError(
+                  "An error occurred while adding the medication.",
+                );
+              }
             }}
           >
+            {successMessage && (
+              <p className="success-message" role="status">
+                <i className="bi bi-check-circle" /> {successMessage}
+              </p>
+            )}
+
+            {(submitError || error) && (
+              <p className="error-message" role="alert">
+                <i className="bi bi-exclamation-circle" />{" "}
+                {submitError || error}
+              </p>
+            )}
+
             <div className="medication-form-grid">
               <div className="form-group">
                 <label htmlFor="medicationName">
@@ -125,12 +177,13 @@ export default function AddMedications() {
                 className="btn-secondary"
                 onClick={() => navigate("/medications")}
               >
+                <i className="bi bi-x-lg" />
                 Cancel
               </button>
 
-              <button type="submit" className="btn-primary">
+              <button type="submit" className="btn-primary" disabled={loading}>
                 <i className="bi bi-plus-lg" />
-                Add medication
+                {loading ? "Saving..." : "Add medication"}
               </button>
             </div>
           </form>

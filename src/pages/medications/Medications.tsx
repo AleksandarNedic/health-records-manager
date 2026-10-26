@@ -1,7 +1,107 @@
+
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import { onAuthStateChanged } from "firebase/auth";
+import { collection, onSnapshot } from "firebase/firestore";
+import { auth, db } from "../../lib/firebase";
+
+interface Medication {
+  id: string;
+  medicationName: string;
+  dosage: string;
+  frequency: string;
+  route: string;
+  startDate: string;
+  endDate: string;
+  prescribedBy: string;
+  medicationNotes: string;
+}
 
 export default function Medications() {
   const navigate = useNavigate();
+
+  const [medications, setMedications] = useState<Medication[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    let unsubscribeMedications: (() => void) | undefined;
+
+    const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+      unsubscribeMedications?.();
+      unsubscribeMedications = undefined;
+
+      if (!user) {
+        setMedications([]);
+        setLoading(false);
+        return;
+      }
+
+      setLoading(true);
+      setError("");
+
+      const medicationsCollection = collection(
+        db,
+        "users",
+        user.uid,
+        "medications"
+      );
+
+      unsubscribeMedications = onSnapshot(
+        medicationsCollection,
+        (snapshot) => {
+          const medicationList: Medication[] = snapshot.docs.map((doc) => {
+            const data = doc.data();
+
+            return {
+              id: doc.id,
+              medicationName: data.medicationName ?? "",
+              dosage: data.dosage ?? "",
+              frequency: data.frequency ?? "",
+              route: data.route ?? "",
+              startDate: data.startDate ?? "",
+              endDate: data.endDate ?? "",
+              prescribedBy: data.prescribedBy ?? "",
+              medicationNotes: data.medicationNotes ?? "",
+            };
+          });
+
+          setMedications(medicationList);
+          setLoading(false);
+        },
+        (error) => {
+          console.error("Error loading medications:", error);
+          setError("Failed to load medications.");
+          setLoading(false);
+        }
+      );
+    });
+
+    return () => {
+      unsubscribeAuth();
+      unsubscribeMedications?.();
+    };
+  }, []);
+
+  const today = new Date().toISOString().split("T")[0];
+
+  const activeMedications = medications.filter(
+    (medication) => !medication.endDate || medication.endDate >= today
+  );
+
+  const completedMedications = medications.filter(
+    (medication) =>
+      Boolean(medication.endDate) && medication.endDate < today
+  );
+
+  const formatValue = (value: string) => {
+    if (!value) return "";
+
+    return value
+      .split("-")
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+      .join(" ");
+  };
 
   return (
     <div className="health-app medications-page">
@@ -34,7 +134,7 @@ export default function Medications() {
             </div>
             <div>
               <p>Total medications</p>
-              <h2>0</h2>
+              <h2>{medications.length}</h2>
             </div>
           </div>
 
@@ -44,7 +144,7 @@ export default function Medications() {
             </div>
             <div>
               <p>Active medications</p>
-              <h2>0</h2>
+              <h2>{activeMedications.length}</h2>
             </div>
           </div>
 
@@ -54,7 +154,7 @@ export default function Medications() {
             </div>
             <div>
               <p>Completed treatments</p>
-              <h2>0</h2>
+              <h2>{completedMedications.length}</h2>
             </div>
           </div>
         </section>
@@ -76,27 +176,80 @@ export default function Medications() {
             </button>
           </div>
 
-          <div className="medications-empty-state">
-            <div className="medications-empty-icon">
-              <i className="bi bi-capsule" />
+          {loading ? (
+            <p>Loading medications...</p>
+          ) : error ? (
+            <p className="error-message">{error}</p>
+          ) : medications.length === 0 ? (
+            <div className="medications-empty-state">
+              <div className="medications-empty-icon">
+                <i className="bi bi-capsule" />
+              </div>
+
+              <h3>No medications yet</h3>
+
+              <p>
+                You haven't added any medications. Add your first medication
+                to keep your treatment information organized.
+              </p>
+
+              <button
+                type="button"
+                className="btn-primary"
+                onClick={() => navigate("/addmedications")}
+              >
+                <i className="bi bi-plus-lg" />
+                Add your first medication
+              </button>
             </div>
+          ) : (
+            <div className="medications-list">
+              {medications.map((medication) => (
+                <article
+                  key={medication.id}
+                  className="medication-stat-card"
+                >
+                  <div className="medication-stat-icon">
+                    <i className="bi bi-capsule" />
+                  </div>
 
-            <h3>No medications yet</h3>
+                  <div>
+                    <h3>{medication.medicationName}</h3>
 
-            <p>
-              You haven't added any medications. Add your first medication to
-              keep your treatment information organized.
-            </p>
+                    {medication.dosage && (
+                      <p>Dosage: {medication.dosage}</p>
+                    )}
 
-            <button
-              type="button"
-              className="btn-primary"
-              onClick={() => navigate("/addmedications")}
-            >
-              <i className="bi bi-plus-lg" />
-              Add your first medication
-            </button>
-          </div>
+                    {medication.frequency && (
+                      <p>
+                        Frequency: {formatValue(medication.frequency)}
+                      </p>
+                    )}
+
+                    {medication.route && (
+                      <p>Route: {formatValue(medication.route)}</p>
+                    )}
+
+                    {medication.startDate && (
+                      <p>Start date: {medication.startDate}</p>
+                    )}
+
+                    {medication.endDate && (
+                      <p>End date: {medication.endDate}</p>
+                    )}
+
+                    {medication.prescribedBy && (
+                      <p>Prescribed by: {medication.prescribedBy}</p>
+                    )}
+
+                    {medication.medicationNotes && (
+                      <p>Notes: {medication.medicationNotes}</p>
+                    )}
+                  </div>
+                </article>
+              ))}
+            </div>
+          )}
         </section>
 
         <footer className="medications-footer">

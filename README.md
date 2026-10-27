@@ -5,24 +5,28 @@ A personal health management application built with React, TypeScript, Vite, Boo
 ## Features
 
 ### Authentication and User Profile
+
 - User registration and login
 - Firebase Authentication
 - User profile management with Cloud Firestore
 - User-specific data organization
 
 ### Dashboard
+
 - Personal health dashboard
 - Dashboard navigation to application sections
 - Responsive layout
 - Pink futuristic medical UI
 
 ### Medical Records
+
 - Medical records management structure
 - Health record form and data model in development
 - User-specific health record storage structure
 - Planned CRUD operations for medical records
 
 ### Medications
+
 - Medications page layout
 - Add Medication form with fields for:
   - Medication name
@@ -37,6 +41,7 @@ A personal health management application built with React, TypeScript, Vite, Boo
 - Medication persistence and listing still to be completed
 
 ### Appointments
+
 - Appointments page for viewing scheduled medical visits
 - Add Appointment form with fields for:
   - Appointment title
@@ -60,7 +65,19 @@ A personal health management application built with React, TypeScript, Vite, Boo
 - Loading state and disabled submit button while saving
 - Error handling for failed appointment creation and retrieval
 
+### Health Insights
+
+- Health Insights page layout
+- Form for entering general wellness information
+- Health goal selection
+- Average sleep duration
+- Daily water intake
+- Physical activity level
+- Additional health notes
+- Planned health summaries and personalized wellness suggestions
+
 ### UI and Navigation
+
 - Responsive layouts for different screen sizes
 - Custom styling for page layouts, forms, buttons, and navigation
 - Bootstrap and Bootstrap Icons
@@ -82,7 +99,7 @@ A personal health management application built with React, TypeScript, Vite, Boo
 
 - `src/pages/auth/` — Login and registration pages
 - `src/pages/dashboard/` — Dashboard page
-- `src/pages/` — Application pages, including appointments and medication-related pages
+- `src/pages/` — Application pages, including appointments, medications, and Health Insights
 - `src/hooks/` — Custom React hooks for reusable application logic
 - `src/lib/` — Firebase configuration and shared utilities
 - `src/App.tsx` — Application routes
@@ -90,7 +107,7 @@ A personal health management application built with React, TypeScript, Vite, Boo
 
 ## Firestore Data Structure
 
-The application uses user-specific subcollections to organize health information.
+The application is intended to organize health information in user-specific subcollections.
 
 ```text
 users/
@@ -111,6 +128,8 @@ Each appointment document stores the submitted appointment details and a `create
 
 The appointments page listens for changes to the authenticated user's appointment collection using `onSnapshot`, allowing saved appointments to appear and update in real time.
 
+The medication and health record structures are part of the planned data organization; their complete persistence workflows are still in development.
+
 ## Project Status
 
 **Currently in development.**
@@ -118,61 +137,6 @@ The appointments page listens for changes to the authenticated user's appointmen
 The application has an initial structure with authentication, Firebase configuration, dashboard UI, and multiple health-management sections.
 
 The appointment workflow has been implemented at the application level:
+
 - Appointment form and field collection
-- Saving appointments to Cloud Firestore
-- Loading appointments from the current user's collection
-- Real-time updates to the appointment list
-- Loading, empty, and error states
-- Navigation between the appointment form, appointments list, and dashboard
-
-The medication pages and Add Medication form UI have been created, but medication saving and full medication management still need to be implemented.
-
-Medical records management and the remaining dashboard functionality are still being developed.
-
-## Current Focus
-
-- Finishing and refining the dashboard UI
-- Testing registration and login flows
-- Verifying user profile data loaded from Firestore
-- Completing medical records management
-- Connecting medication forms to Firestore
-- Displaying and managing saved medications
-- Testing appointment creation and retrieval
-- Investigating any remaining issues with appointment data loading
-- Implementing appointment editing and deletion
-- Configuring and testing Firestore security rules
-- Improving loading states, validation, and error handling
-- Testing authentication and user-specific data access
-
-## Security
-
-The application is designed to keep each user's health information private and accessible only to authorized users.
-
-Health data is organized under user-specific Firestore paths. However, the intended data structure alone does not guarantee security.
-
-Firestore security rules must be configured and tested to ensure that:
-- Only authenticated users can access protected health data
-- Users can read and modify only their own records
-- Users cannot access another user's health records, medications, or appointments
-- Unauthorized read and write operations are rejected
-
-The application should not be used with real or sensitive health information until its security rules and access controls have been thoroughly tested.
-
-## Future Goals
-
-- Complete the dashboard and profile functionality
-- Implement full CRUD operations for medical records
-- Implement medication creation, listing, updating, and deletion
-- Complete appointment management, including editing and deletion
-- Improve form validation and user feedback
-- Add robust loading and error handling throughout the application
-- Test Firestore security rules and authentication edge cases
-- Test user-specific data isolation
-- Improve responsive design and accessibility
-- Deploy the application
-
-
-
-## Project Status
-
-Currently in development. The dashboard UI is being built, with Firebase integration, authentication, medical record management, and security rules planned for implementation.
+- Saving appointments

@@ -8,7 +8,7 @@ import Medications from "./pages/medications/Medications";
 import AddMedications from "./pages/medications/AddMedications";
 import Appointments from "../src/pages/appointments/Appointments";
 import AddAppointment from "./pages/appointments/addAppointment";
-import HealthInsights from "./pages/health-insights/healthInsights";
+import HealthInsights from "./pages/health-insights/HealthInsights";
 
 function App() {
   return (

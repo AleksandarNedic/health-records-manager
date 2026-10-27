@@ -6,7 +6,6 @@ import { auth, db } from "../../lib/firebase";
 import "../../App.css";
 import RecentHealthRecords from "../../components/RecentHealthRecords";
 
-
 const healthMetrics = [
   {
     label: "Heart rate",
@@ -177,7 +176,7 @@ function Dashboard() {
           <button
             type="button"
             className="nav-item"
-            onClick={() => navigate("/health-insights")}
+            onClick={() => navigate("/healthinsights")}
           >
             <i className="bi bi-graph-up-arrow" />
             Health insights

@@ -8,6 +8,7 @@ import Medications from "./pages/medications/Medications";
 import AddMedications from "./pages/medications/AddMedications";
 import Appointments from "../src/pages/appointments/Appointments";
 import AddAppointment from "./pages/appointments/addAppointment";
+import HealthInsights from "./pages/health-insights/healthInsights";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
       <Route path="/addmedications" element={<AddMedications />} />
       <Route path="/appointments" element={<Appointments />}></Route>
       <Route path="/addappointment" element={<AddAppointment />}></Route>
+      <Route path="healthinsights" element={<HealthInsights/>}></Route>
     </Routes>
   );
 }

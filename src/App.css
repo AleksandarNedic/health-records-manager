@@ -3788,3 +3788,194 @@ a {
     flex-shrink: 0;
   }
 }
+.health-insights-card {
+  background: #ffffff;
+  border: 1px solid #f5dce8;
+  border-radius: 20px;
+  padding: 28px;
+  margin-top: 24px;
+  box-shadow: 0 8px 25px rgba(217, 78, 145, 0.06);
+}
+
+.health-insights-heading {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.health-insights-icon {
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: #fff1f7;
+  color: #d94e91;
+  border-radius: 15px;
+  font-size: 24px;
+}
+
+.health-insights-heading h2 {
+  margin: 0 0 6px;
+  color: #332633;
+  font-size: 20px;
+}
+
+.health-insights-heading p {
+  margin: 0;
+  color: #8b7887;
+  font-size: 14px;
+}
+
+.health-insights-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.health-insights-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.health-insights-form label {
+  color: #493644;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.health-insights-form input,
+.health-insights-form select,
+.health-insights-form textarea {
+  width: 100%;
+  padding: 12px 14px;
+  background: #fffafd;
+  color: #332633;
+  border: 1px solid #ead8e2;
+  border-radius: 11px;
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.health-insights-form input:focus,
+.health-insights-form select:focus,
+.health-insights-form textarea:focus {
+  border-color: #ed78aa;
+  box-shadow: 0 0 0 3px rgba(237, 120, 170, 0.13);
+}
+
+.health-insights-form textarea {
+  resize: vertical;
+  min-height: 110px;
+}
+
+.health-insights-form input::placeholder,
+.health-insights-form textarea::placeholder {
+  color: #b5a3af;
+}
+
+.health-insights-form .form-row {
+  display: flex;
+  gap: 20px;
+}
+
+.health-insights-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.insights-reset-button,
+.insights-submit-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 11px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.insights-reset-button {
+  color: #d94e91;
+  background: #fff1f7;
+  border: 1px solid #f3c3d9;
+}
+
+.insights-reset-button:hover {
+  background: #ffe3ef;
+}
+
+.insights-submit-button {
+  color: #ffffff;
+  background: #ed78aa;
+  border: 1px solid #ed78aa;
+}
+
+.insights-submit-button:hover {
+  background: #d94e91;
+  border-color: #d94e91;
+  box-shadow: 0 4px 12px rgba(217, 78, 145, 0.2);
+}
+
+.insights-reset-button:focus-visible,
+.insights-submit-button:focus-visible {
+  outline: 3px solid rgba(237, 120, 170, 0.3);
+  outline-offset: 3px;
+}
+
+@media (max-width: 600px) {
+  .health-insights-card {
+    padding: 20px 16px;
+  }
+
+  .health-insights-form .form-row {
+    flex-direction: column;
+  }
+
+  .health-insights-actions {
+    flex-direction: column-reverse;
+  }
+
+  .health-insights-actions button {
+    width: 100%;
+  }
+}
+.health-insights-page .main-content {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 24px;
+  box-sizing: border-box;
+}
+
+.health-insights-page .page-header {
+  width: 100%;
+}
+
+.health-insights-page .health-insights-card {
+  width: 100%;
+  max-width: 850px;
+  margin: 24px auto 0;
+  box-sizing: border-box;
+}
+
+@media (max-width: 600px) {
+  .health-insights-page .main-content {
+    padding: 20px 16px;
+  }
+}

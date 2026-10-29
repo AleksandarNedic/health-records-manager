@@ -9,6 +9,8 @@ import AddMedications from "./pages/medications/AddMedications";
 import Appointments from "../src/pages/appointments/Appointments";
 import AddAppointment from "./pages/appointments/addAppointment";
 import HealthInsights from "./pages/health-insights/HealthInsights";
+import privacySettings from "./pages/privacy-settings/privacySettings";
+import PrivacySettings from "./pages/privacy-settings/privacySettings";
 
 function App() {
   return (
@@ -23,7 +25,8 @@ function App() {
       <Route path="/addmedications" element={<AddMedications />} />
       <Route path="/appointments" element={<Appointments />}></Route>
       <Route path="/addappointment" element={<AddAppointment />}></Route>
-      <Route path="healthinsights" element={<HealthInsights/>}></Route>
+      <Route path="healthinsights" element={<HealthInsights />}></Route>
+      <Route path="privacysettings" element={<PrivacySettings />}></Route>
     </Routes>
   );
 }

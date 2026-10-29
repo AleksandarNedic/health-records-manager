@@ -196,7 +196,7 @@ function Dashboard() {
             <button
               type="button"
               className="privacy-link"
-              onClick={() => navigate("/privacy")}
+              onClick={() => navigate("/privacysettings")}
             >
               Privacy settings <i className="bi bi-arrow-up-right" />
             </button>

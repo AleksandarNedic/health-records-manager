@@ -4284,3 +4284,30 @@ a {
     margin-left: 59px;
   }
 }
+.privacy-feedback {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-size: 13px;
+}
+
+.privacy-feedback-success {
+  color: #26734d;
+  background: #effaf3;
+  border: 1px solid #ccebd7;
+}
+
+.privacy-feedback-error {
+  color: #b83252;
+  background: #fff1f3;
+  border: 1px solid #f2cbd4;
+}
+
+@media (max-width: 650px) {
+  .privacy-setting-row .privacy-back-btn {
+    margin-left: 59px;
+  }
+}

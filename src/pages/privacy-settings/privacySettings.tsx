@@ -1,7 +1,8 @@
-import { useNavigate } from "react-router";
-import { auth } from "../../lib/firebase";
-import { sendPasswordResetEmail } from "firebase/auth";
 import { useState } from "react";
+import { useNavigate } from "react-router";
+import { collection, getDocs } from "firebase/firestore";
+import { sendPasswordResetEmail } from "firebase/auth";
+import { auth, db } from "../../lib/firebase";
 
 export default function PrivacySettings() {
   const navigate = useNavigate();
@@ -10,17 +11,20 @@ export default function PrivacySettings() {
   const [passwordMessage, setPasswordMessage] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
+  const [exportLoading, setExportLoading] = useState(false);
+  const [exportMessage, setExportMessage] = useState("");
+  const [exportError, setExportError] = useState("");
+
   async function handlePasswordReset() {
     const email = auth.currentUser?.email;
 
+    setPasswordMessage("");
+    setPasswordError("");
+
     if (!email) {
       setPasswordError("No email is associated with your account.");
-      setPasswordMessage("");
       return;
     }
-
-    setPasswordError("");
-    setPasswordMessage("");
 
     try {
       await sendPasswordResetEmail(auth, email);
@@ -30,12 +34,85 @@ export default function PrivacySettings() {
     }
   }
 
+  async function handleExportData() {
+    const currentUser = auth.currentUser;
+
+    setExportMessage("");
+    setExportError("");
+
+    if (!currentUser) {
+      setExportError("You must be logged in to export your data.");
+      return;
+    }
+
+    setExportLoading(true);
+
+    try {
+      const collectionNames = ["healthRecords", "medications", "appointments"];
+
+      const exportedData: Record<string, unknown[]> = {};
+
+      for (const collectionName of collectionNames) {
+        const collectionRef = collection(
+          db,
+          "users",
+          currentUser.uid,
+          collectionName,
+        );
+
+        const snapshot = await getDocs(collectionRef);
+
+        exportedData[collectionName] = snapshot.docs.map(
+          (documentSnapshot) => ({
+            id: documentSnapshot.id,
+            ...documentSnapshot.data(),
+          }),
+        );
+      }
+
+      const exportFile = {
+        exportedAt: new Date().toISOString(),
+        user: {
+          uid: currentUser.uid,
+          email: currentUser.email,
+        },
+        data: exportedData,
+      };
+
+      const blob = new Blob([JSON.stringify(exportFile, null, 2)], {
+        type: "application/json",
+      });
+
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+
+      link.href = url;
+      link.download = "health-records-export.json";
+
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      window.setTimeout(() => {
+        URL.revokeObjectURL(url);
+      }, 1000);
+
+      setExportMessage("Your data has been exported successfully.");
+    } catch {
+      setExportError(
+        "Could not export your data. Check your connection and permissions, then try again.",
+      );
+    } finally {
+      setExportLoading(false);
+    }
+  }
+
   return (
     <div className="privacy-page">
       <main className="privacy-main">
         <header className="privacy-header">
           <div>
-            <span className="privacy-eyebrow">ACCOUNT & SECURITY</span>
+            <span className="privacy-eyebrow">ACCOUNT &amp; SECURITY</span>
             <h1>Privacy Settings</h1>
             <p>Manage your personal information and data privacy.</p>
           </div>
@@ -114,13 +191,15 @@ export default function PrivacySettings() {
               className="privacy-feedback privacy-feedback-success"
               role="status"
             >
-              <i className="bi bi-check-circle" /> {passwordMessage}
+              <i className="bi bi-check-circle" />
+              {passwordMessage}
             </p>
           )}
 
           {passwordError && (
             <p className="privacy-feedback privacy-feedback-error" role="alert">
-              <i className="bi bi-exclamation-circle" /> {passwordError}
+              <i className="bi bi-exclamation-circle" />
+              {passwordError}
             </p>
           )}
         </section>
@@ -182,8 +261,32 @@ export default function PrivacySettings() {
               <p>Get a copy of your personal health information.</p>
             </div>
 
-            <span className="privacy-tag privacy-tag-planned">Coming soon</span>
+            <button
+              type="button"
+              className="privacy-back-btn"
+              onClick={handleExportData}
+              disabled={exportLoading}
+            >
+              {exportLoading ? "Exporting..." : "Export data"}
+            </button>
           </div>
+
+          {exportMessage && (
+            <p
+              className="privacy-feedback privacy-feedback-success"
+              role="status"
+            >
+              <i className="bi bi-check-circle" />
+              {exportMessage}
+            </p>
+          )}
+
+          {exportError && (
+            <p className="privacy-feedback privacy-feedback-error" role="alert">
+              <i className="bi bi-exclamation-circle" />
+              {exportError}
+            </p>
+          )}
 
           <div className="privacy-setting-row">
             <div className="privacy-setting-icon privacy-danger-icon">
@@ -207,9 +310,10 @@ export default function PrivacySettings() {
           <div>
             <h3>Important privacy notice</h3>
             <p>
-              These options are currently informational. Actual data protection
-              depends on Firebase security rules and the way your application
-              handles stored information.
+              The export option downloads health records, medications and
+              appointments stored under your user document. Actual data
+              protection depends on Firebase security rules and the way your
+              application handles stored information.
             </p>
           </div>
         </section>
